@@ -6,6 +6,12 @@ import { Lead } from '@/types/lead';
 import { formatCurrency } from '@/lib/calculations';
 import { BarChart3, TrendingUp, Users } from 'lucide-react';
 
+const dateOptions: Intl.DateTimeFormatOptions = {
+  day: 'short',
+  month: 'short',
+  year: 'numeric',
+};
+
 export default function AdminPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
@@ -143,11 +149,7 @@ export default function AdminPage() {
                       <td className="px-6 py-4 text-sm text-gray-600">£{lead.monthly_bill}</td>
                       <td className="px-6 py-4 text-sm font-semibold text-green-600">{formatCurrency(lead.estimated_savings)}</td>
                       <td className="px-6 py-4 text-sm text-gray-600">
-                        {new Date(lead.created_at).toLocaleDateString('en-GB', {
-                          day: 'short' as const,
-                          month: 'short' as const,
-                          year: 'numeric' as const,
-                        })}
+                        {new Date(lead.created_at).toLocaleDateString('en-GB', dateOptions)}
                       </td>
                     </tr>
                   ))}
@@ -172,7 +174,7 @@ export default function AdminPage() {
                     lead.property_type,
                     lead.monthly_bill,
                     lead.estimated_savings,
-                    new Date(lead.created_at).toLocaleDateString(),
+                    new Date(lead.created_at).toLocaleDateString('en-GB', dateOptions),
                   ]),
                 ]
                   .map((row) => row.join(','))
