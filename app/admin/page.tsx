@@ -144,9 +144,9 @@ export default function AdminPage() {
                       <td className="px-6 py-4 text-sm font-semibold text-green-600">{formatCurrency(lead.estimated_savings)}</td>
                       <td className="px-6 py-4 text-sm text-gray-600">
                         {new Date(lead.created_at).toLocaleDateString('en-GB', {
-                          day: 'short',
-                          month: 'short',
-                          year: 'numeric',
+                          day: 'short' as const,
+                          month: 'short' as const,
+                          year: 'numeric' as const,
                         })}
                       </td>
                     </tr>
