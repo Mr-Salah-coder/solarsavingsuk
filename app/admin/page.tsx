@@ -6,12 +6,6 @@ import { Lead } from '@/types/lead';
 import { formatCurrency } from '@/lib/calculations';
 import { BarChart3, TrendingUp, Users } from 'lucide-react';
 
-const dateOptions: Intl.DateTimeFormatOptions = {
-  day: 'short',
-  month: 'short',
-  year: 'numeric',
-};
-
 export default function AdminPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,11 +21,9 @@ export default function AdminPage() {
         const data = await getLeads();
         setLeads(data || []);
 
-        // Calculate stats
         const totalLeads = data?.length || 0;
         const totalValue = (data || []).reduce((sum, lead) => sum + lead.estimated_savings, 0);
         
-        // Count today's leads
         const today = new Date().toDateString();
         const todayLeads = (data || []).filter(
           (lead) => new Date(lead.created_at).toDateString() === today
@@ -52,6 +44,11 @@ export default function AdminPage() {
     fetchLeads();
   }, []);
 
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB');
+  };
+
   if (loading) {
     return (
       <main className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -65,7 +62,6 @@ export default function AdminPage() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      {/* Navigation */}
       <nav className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <a href="/" className="text-2xl font-bold text-blue-600">
@@ -75,11 +71,8 @@ export default function AdminPage() {
         </div>
       </nav>
 
-      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-12">
-        {/* Stats Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          {/* Total Leads */}
           <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-600">
             <div className="flex items-center justify-between">
               <div>
@@ -90,7 +83,6 @@ export default function AdminPage() {
             </div>
           </div>
 
-          {/* Today's Leads */}
           <div className="bg-white rounded-lg shadow p-6 border-l-4 border-green-600">
             <div className="flex items-center justify-between">
               <div>
@@ -101,7 +93,6 @@ export default function AdminPage() {
             </div>
           </div>
 
-          {/* Lead Value */}
           <div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-600">
             <div className="flex items-center justify-between">
               <div>
@@ -113,7 +104,6 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Leads Table */}
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
             <h2 className="text-xl font-bold text-gray-900">Recent Leads</h2>
@@ -148,9 +138,7 @@ export default function AdminPage() {
                       <td className="px-6 py-4 text-sm text-gray-600 capitalize">{lead.property_type.replace('_', ' ')}</td>
                       <td className="px-6 py-4 text-sm text-gray-600">£{lead.monthly_bill}</td>
                       <td className="px-6 py-4 text-sm font-semibold text-green-600">{formatCurrency(lead.estimated_savings)}</td>
-                      <td className="px-6 py-4 text-sm text-gray-600">
-                        {new Date(lead.created_at).toLocaleDateString('en-GB', dateOptions)}
-                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">{formatDate(lead.created_at)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -159,7 +147,6 @@ export default function AdminPage() {
           )}
         </div>
 
-        {/* Export Button */}
         {leads.length > 0 && (
           <div className="mt-6 flex justify-end">
             <button
@@ -174,7 +161,7 @@ export default function AdminPage() {
                     lead.property_type,
                     lead.monthly_bill,
                     lead.estimated_savings,
-                    new Date(lead.created_at).toLocaleDateString('en-GB', dateOptions),
+                    formatDate(lead.created_at),
                   ]),
                 ]
                   .map((row) => row.join(','))
